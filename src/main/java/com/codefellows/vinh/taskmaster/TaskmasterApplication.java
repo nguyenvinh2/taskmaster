@@ -19,16 +19,4 @@ public class TaskmasterApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TaskmasterApplication.class, args);
 	}
-
-	@Bean
-	InitializingBean seedDatabase() {
-		return () -> {
-			Task initTask = new Task();
-			initTask.setStatus(Status.Assigned.toString());
-			initTask.setTitle("Do this thing");
-			initTask.setDescription("Whatever");
-			taskRepository.save(initTask);
-		};
-	}
-
 }

@@ -26,4 +26,5 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.584'
 	compile group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.1.0'
+	implementation 'com.google.code.gson:gson:2.8.5'
 }
