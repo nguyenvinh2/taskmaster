@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.codefellows.vinh.taskmaster.model.Status;
@@ -13,11 +14,9 @@ import com.codefellows.vinh.taskmaster.repository.TaskRepository;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @Controller
@@ -26,7 +25,7 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
-    @RequestMapping(value="/tasks", method= RequestMethod.GET)
+    @RequestMapping(value="/tasks", method= RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getTask(){
         Iterable<Task> tasks = taskRepository.findAll();
@@ -35,12 +34,8 @@ public class TaskController {
     }
 
     @RequestMapping(value="/tasks", method= RequestMethod.POST)
-    public String createTask(String title, String description){
-        Task initTask = new Task();
-        initTask.setTitle(title);
-        initTask.setDescription(description);
-        initTask.setStatus(Status.Available.toString());
-        taskRepository.save(initTask);
+    public String createTask(@RequestBody Task task){
+        taskRepository.save(task);
         return "redirect:/tasks";
     }
 
