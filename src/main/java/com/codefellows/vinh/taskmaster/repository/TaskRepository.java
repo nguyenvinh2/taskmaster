@@ -10,4 +10,7 @@ public interface TaskRepository extends CrudRepository<Task, Integer> {
     Iterable<Task> findAll();
 
     Task findById(UUID id);
+
+    @EnableScan
+    Iterable<Task> findAllByAssignee(String assignee);
 }

@@ -15,6 +15,7 @@ public class Task {
     private String title;
     private String description;
     private String status;
+    private String assignee;
 
     // Partition key
     @DynamoDBHashKey(attributeName = "Id")
@@ -22,7 +23,6 @@ public class Task {
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -31,7 +31,6 @@ public class Task {
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -40,7 +39,6 @@ public class Task {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -49,9 +47,16 @@ public class Task {
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @DynamoDBAttribute(attributeName = "Assignee")
+    public String getAssignee() {
+        return assignee;
+    }
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
     }
 }
 

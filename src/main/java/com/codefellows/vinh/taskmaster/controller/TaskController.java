@@ -25,29 +25,50 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
-    @RequestMapping(value="/tasks", method= RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value="/tasks", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String getTask(){
+    public String getAllTask(){
         Iterable<Task> tasks = taskRepository.findAll();
         Gson jsonConvert = new Gson();
         return jsonConvert.toJson(tasks);
     }
 
-    @RequestMapping(value="/tasks", method= RequestMethod.POST)
+    @RequestMapping(value="/tasks", method = RequestMethod.POST)
     public String createTask(@RequestBody Task task){
+        if(task.getAssignee() == null) {
+            task.setStatus(Status.Available.toString());
+        } else {
+            task.setStatus(Status.Assigned.toString());
+        }
         taskRepository.save(task);
-        return "redirect:/tasks";
+        return "redirect:/tasks/"+task.getId().toString();
     }
 
-    @RequestMapping(value="/tasks/{id}/state", method= RequestMethod.PUT)
-    public String editTask(@PathVariable UUID id){
+    @RequestMapping(value="/tasks/{id}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getTask(@PathVariable UUID id){
+        Task selectTask = taskRepository.findById(id);
+        Gson jsonConvert = new Gson();
+        return jsonConvert.toJson(selectTask);
+    }
+
+    @RequestMapping(value="/tasks/{id}/state", method = RequestMethod.PUT)
+    public String changeTaskState(@PathVariable UUID id){
         Task selectedTask = taskRepository.findById(id);
         if(selectedTask != null && !selectedTask.getStatus().equals("Finished")) {
             Status nextStatus = Status.nextValue(Status.valueOf(selectedTask.getStatus()));
             selectedTask.setStatus(nextStatus.toString());
             taskRepository.save(selectedTask);
-            return "redirect:/tasks";
+            return "redirect:/tasks/"+id;
         } else
-        return "redirect:/tasks";
+        return "redirect:/tasks"+id;
+    }
+
+    @RequestMapping(value="/users/{name}/tasks", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getUserTask(@PathVariable String name) {
+        Iterable<Task> userTasks = taskRepository.findAllByAssignee(name);
+        Gson jsonConvert = new Gson();
+        return jsonConvert.toJson(userTasks);
     }
 }
