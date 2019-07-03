@@ -71,4 +71,16 @@ public class TaskController {
         Gson jsonConvert = new Gson();
         return jsonConvert.toJson(userTasks);
     }
+
+    @RequestMapping(value="/tasks/{id}/assign/{assignee}", method = RequestMethod.PUT)
+    public String changeTaskAssignee(@PathVariable UUID id, @PathVariable String assignee){
+        Task selectedTask = taskRepository.findById(id);
+        if(selectedTask != null) {
+            selectedTask.setAssignee(assignee);
+            selectedTask.setStatus(Status.Assigned.toString());
+            taskRepository.save(selectedTask);
+            return "redirect:/tasks/"+id;
+        } else
+            return "redirect:/tasks"+id;
+    }
 }
