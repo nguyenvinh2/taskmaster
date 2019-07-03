@@ -25,7 +25,7 @@ public class TaskController {
     @ResponseBody
     public String getAllTask(@RequestParam(required = false) String[] status) {
         List<Task> tasks = new ArrayList<>();
-        if (status == null && status.length > 0) {
+        if (status == null || status.length == 0) {
             tasks = taskRepository.findAll();
         } else {
             for(int i = 0; i < status.length; i++) {
@@ -65,7 +65,7 @@ public class TaskController {
             taskRepository.save(selectedTask);
             return "redirect:/tasks/" + id;
         } else
-            return "redirect:/tasks" + id;
+            return "redirect:/tasks/" + id;
     }
 
     @RequestMapping(value = "/users/{name}/tasks", method = RequestMethod.GET, produces = "application/json")
@@ -77,7 +77,10 @@ public class TaskController {
             List<Task> filteredTasks = new ArrayList<>();
             for(int i = 0; i < status.length; i++) {
                 String filteredStatus = StringUtils.capitalize(status[i].toLowerCase());
-                filteredTasks = CollectionUtils.mergeLists(filteredTasks, userTasks.stream().filter(task -> task.getStatus().equals(filteredStatus)).collect(Collectors.toList()));
+                filteredTasks = CollectionUtils.mergeLists(filteredTasks, userTasks
+                        .stream()
+                        .filter(task -> task.getStatus().equals(filteredStatus))
+                        .collect(Collectors.toList()));
             }
             return jsonConvert.toJson(filteredTasks);
         }
