@@ -1,6 +1,10 @@
 # Taskmaster
 
+Backend:
 http://taskmaster-dev.us-west-2.elasticbeanstalk.com/tasks/
+
+Frontend:
+http://taskmaster-interface.s3-website-us-west-2.amazonaws.com/
 
 ## Intro
 
@@ -8,6 +12,8 @@ This is a API using AWS DynamoDb
 
 This application allows users to retrieve all tasks from the database as well
 as create edit, and delete each task.
+
+Users can also upload image to S3 buckets.
 
 ## API
 
@@ -24,6 +30,8 @@ as create edit, and delete each task.
             title = {value}
             description = {value}
             assignee = {value}
+        
+        POST /tasks/{id}/images - takes in a file and uploads it to S3 buckets.
             
         PUT /tasks/{id}/state - changes the state of the task in the following order:
             AVAILABLE -> ASSIGNED -> ACCEPTED -> FINISHED
@@ -42,3 +50,5 @@ No Views, API interaction can be done via postman or any other GET/POST/PUT
 programs.
 
 Set server to 5000.
+
+This is split up in different AWS accounts due to Amazon Security restrictions.
