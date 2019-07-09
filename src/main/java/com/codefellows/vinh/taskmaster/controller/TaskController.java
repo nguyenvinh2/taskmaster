@@ -5,6 +5,7 @@ import com.amazonaws.util.CollectionUtils;
 import com.codefellows.vinh.taskmaster.model.Status;
 import com.codefellows.vinh.taskmaster.model.Task;
 import com.codefellows.vinh.taskmaster.repository.TaskRepository;
+import com.codefellows.vinh.taskmaster.utility.Uploader;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin
 @Controller
 public class TaskController {
+
+    @Autowired
+    private Uploader uploader;
 
     @Autowired
     private TaskRepository taskRepository;
@@ -116,5 +122,16 @@ public class TaskController {
     public String deleteAllTask() {
         taskRepository.deleteAll();
         return "{\"message\": \"All tasks have been successfully deleted.\"}";
+    }
+
+    @RequestMapping(value = "/tasks/{id}/images", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public String uploadFile(@PathVariable UUID id, @RequestPart(value = "file") MultipartFile file){
+        Gson jsonConvert = new Gson();
+        String url = uploader.uploadFile(id.toString(), file);
+        Task selectedTask = taskRepository.findById(id);
+        selectedTask.setFileLocation(url);
+        taskRepository.save(selectedTask);
+        return jsonConvert.toJson(selectedTask);
     }
 }
