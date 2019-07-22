@@ -36,20 +36,28 @@ public class Notification {
 
         String message = "Hi, " + task.getAssignee() + ". You have task " + task.getTitle() + " waiting for you.";
 
-        String messageAdmin = "Task " + task.getTitle() + " has been assigned to " + task.getAssignee() + ".";
-
-        CreateTopicResult createRes = snsClient.createTopic("dynamodb");
-
         PublishResult result = snsClient.publish(new PublishRequest()
                 .withMessage(message)
                 .withPhoneNumber(task.getPhone())
                 .withMessageAttributes(smsAttributes));
 
+        System.out.println(result);
+    }
+
+    public static void sendEmailMessage(Task task) {
+        AmazonSNS snsClient = AmazonSNSClientBuilder
+                .standard()
+                .withCredentials(new EnvironmentVariableCredentialsProvider())
+                .build();
+
+        String messageAdmin = "Task " + task.getTitle() + " has been assigned to " + task.getAssignee() + ".";
+
+        CreateTopicResult createRes = snsClient.createTopic("dynamodb");
+
         PublishResult resultAdmin = snsClient.publish(new PublishRequest()
                 .withMessage(messageAdmin)
                 .withTopicArn(createRes.getTopicArn()));
 
-        System.out.println(result);
         System.out.println(resultAdmin);
     }
 }

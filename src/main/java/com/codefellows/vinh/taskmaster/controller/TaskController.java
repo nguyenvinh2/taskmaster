@@ -6,6 +6,7 @@ import com.codefellows.vinh.taskmaster.model.Status;
 import com.codefellows.vinh.taskmaster.model.Task;
 import com.codefellows.vinh.taskmaster.repository.TaskRepository;
 import com.codefellows.vinh.taskmaster.utility.Notification;
+import com.codefellows.vinh.taskmaster.utility.QueueService;
 import com.codefellows.vinh.taskmaster.utility.Uploader;
 import com.google.gson.Gson;
 import com.sun.tools.corba.se.idl.constExpr.Not;
@@ -74,8 +75,11 @@ public class TaskController {
             selectedTask.setStatus(nextStatus.toString());
             taskRepository.save(selectedTask);
             return "redirect:/tasks/" + id;
-        } else
+        } else if ((selectedTask != null && selectedTask.getStatus().equals("Accepted"))) {
+            Notification.sendEmailMessage(selectedTask);
             return "redirect:/tasks/" + id;
+        }
+        return "redirect:/tasks/" + id;
     }
 
     @RequestMapping(value = "/users/{name}/tasks", method = RequestMethod.GET, produces = "application/json")
@@ -117,6 +121,7 @@ public class TaskController {
         Task selectedTasks = taskRepository.findById(id);
         if (selectedTasks != null) {
             taskRepository.delete(selectedTasks);
+            QueueService.publisher("DeleteTask", selectedTasks.getFileLocation());
             return "{\"message\": \"Task#" + id + "has successfully been deleted.\"}";
         } else {
             return "{\"message\": \"Cannot find Task#" + id + ".\"}";
