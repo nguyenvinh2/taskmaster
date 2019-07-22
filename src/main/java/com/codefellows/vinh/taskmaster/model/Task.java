@@ -16,7 +16,7 @@ public class Task {
     private String description;
     private String status;
     private String assignee;
-
+    private String phone;
     private String fileLocation;
 
     // Partition key
@@ -64,6 +64,10 @@ public class Task {
     @DynamoDBAttribute(attributeName = "FileLocation")
     public String getFileLocation() { return fileLocation; }
     public void setFileLocation(String fileLocation) { this.fileLocation = fileLocation; }
+
+    @DynamoDBAttribute(attributeName = "Phone")
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 }
 
 

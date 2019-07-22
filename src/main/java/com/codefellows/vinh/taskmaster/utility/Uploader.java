@@ -62,12 +62,20 @@ public class Uploader {
                     .withCredentials(credentials)
                     .build();
 
-            String fileName = file.getOriginalFilename()+ "_" + LocalDateTime.now();
+            String fileName = id + "_" + file.getOriginalFilename();
+
             File convertedFile = fileConversion(file);
 
             PutObjectRequest request = new PutObjectRequest(bucketName, fileName, convertedFile);
             s3Client.putObject(request);
+            System.out.println(convertedFile.length());
+
+            if(convertedFile.length() > 350000) {
+                QueueService.publisher("ResizeTrigger", fileName);
+            }
             convertedFile.delete();
+
+
             return endpoint+"/"+fileName;
         } catch (Exception e) {
             e.printStackTrace();
