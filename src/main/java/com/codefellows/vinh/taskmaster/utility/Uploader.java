@@ -62,7 +62,8 @@ public class Uploader {
                     .withCredentials(credentials)
                     .build();
 
-            String fileName = file.getOriginalFilename()+ "_" + LocalDateTime.now();
+            String fileName = id + "_" + file.getOriginalFilename();
+
             File convertedFile = fileConversion(file);
 
             PutObjectRequest request = new PutObjectRequest(bucketName, fileName, convertedFile);
