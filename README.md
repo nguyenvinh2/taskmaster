@@ -36,8 +36,11 @@ Users can also upload image to S3 buckets.
         PUT /tasks/{id}/state - changes the state of the task in the following order:
             AVAILABLE -> ASSIGNED -> ACCEPTED -> FINISHED
             Once the task status reaches finished, it can no longer be modified.
+            Once task is completed, sends email to administrator: demomakeraws@gmail.com
             
-        PUT /tasks/{id}/assign/{assignee} - assigns selected task to assignee provided
+        PUT /tasks/{id}/assign/{assignee}/{phone} - assigns selected task to assignee provided
+        also takes in phone number to send SMS to user assigned.
+        Phone number must be an 11-digit number (E.G. 15558675309)
         
         DELETE /tasks - deletes all tasks
         DELETE /tasks/{id} - deletes selected task
@@ -52,3 +55,19 @@ programs.
 Set server to 5000.
 
 This is split up in different AWS accounts due to Amazon Security restrictions.
+
+SNS will take in user's phone number to send a text message
+
+## SNS Set up
+
+![image](./assets/sns.png)
+
+## Lambda Triggers
+
+![image](./assets/lambda_sqs_thumbnail.png)
+
+![image](./assets/sqs_lambda_thumbnail.png)
+
+![image](./assets/lambda_sqs_delete.png)
+
+![image](./assets/lambda_sqs_delete.png)

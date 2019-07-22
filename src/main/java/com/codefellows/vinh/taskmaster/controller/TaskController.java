@@ -121,7 +121,7 @@ public class TaskController {
         Task selectedTasks = taskRepository.findById(id);
         if (selectedTasks != null) {
             taskRepository.delete(selectedTasks);
-            QueueService.publisher("DeleteTask", selectedTasks.getFileLocation());
+            QueueService.publisher("DeleteTask", selectedTasks.getFileLocation().split("/")[3]);
             return "{\"message\": \"Task#" + id + "has successfully been deleted.\"}";
         } else {
             return "{\"message\": \"Cannot find Task#" + id + ".\"}";
